@@ -87,12 +87,12 @@ func getCurrentDirectory() string {
 
 
 func callExecutable(pid string, code string) {
-
+	fmt.Println(pid)
 	args := []string{pid, code}
 	cmd := exec.Command("inject_python_32.exe", args...)
 	output, err := cmd.CombinedOutput()
 
-	fmt.Printf("Call exe result:\n%v\n\n%v\n\n%v", string(output), cmd.Stdout, cmd.Stderr)
+	fmt.Println(cmd)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
@@ -112,7 +112,7 @@ func main() {
 	exeFilePid := getGamePids()
 	logger.Println(exeFilePid)
 
-	currentModDirectory := getCurrentDirectory() + "/mods//"
+	currentModDirectory := getCurrentDirectory() + "/mods/"
 	modReaderDir, _ := ioutil.ReadDir("./mods/")
 	var mods []string
 	for _, fileInfo := range modReaderDir {
@@ -121,24 +121,21 @@ func main() {
 		}
 	}
 
-	//payload := fmt.Sprintf("inject_python_32.exe %d %s", exeFilePid[0], "\"import sys;sys.path.append('" + currentDirectory + "');import " + mods[0] + "\"")
-
+	
 	logger.Println(fmt.Sprintf("[INFO] EVEModX %s start", VERSION))
 	logger.Println(fmt.Sprintf("[INFO] CPU number: %d", cpuNum))
 	logger.Println(fmt.Sprintf("[INFO] Current mod directory: %s", currentModDirectory))
 	logger.Println(fmt.Sprintf("[INFO] Existing mods: %s", mods))
-
+	pid := fmt.Sprintf("%d",exeFilePid[0])
+	// THIS IS FUCKED -> pid := string(exeFilePid[0])
 	logger.Println(fmt.Sprintf("[INFO] Using pid %d", exeFilePid[0]))
 	
 
 	code := `import sys;sys.path.append('` + currentModDirectory + `');import ` + mods[0] + ``
 
 	logger.Println(fmt.Sprintf("[INFO] Using payload %s", code))
-
-	callExecutable(string(exeFilePid[0]), code)
 	
-	
-	
-	//logger.Println(payload)
+	callExecutable(pid, code)
+		
 }
 
