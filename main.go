@@ -1,6 +1,10 @@
 // EVEModX Main
 // Works under Microsoft Windows platform
 // Still under HEAVY developing
+//
+// WARNING: THIS IS A HACK OF EVE ONLINE.
+// ANY USE OF THIS CODE MAY BE PUNISHED BY
+// THE OFFICAL. USE AT YOUR OWN RISK.
 
 package main
 
@@ -85,34 +89,9 @@ func getCurrentDirectory() string {
 	//return dir
 }
 
+func getMods() []string {
 
-func callExecutable(pid string, code string) {
-	fmt.Println(pid)
-	args := []string{pid, code}
-	cmd := exec.Command("inject_python_32.exe", args...)
-	output, err := cmd.CombinedOutput()
-
-	fmt.Println(cmd)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-	fmt.Printf("Call exetuable result:\n%v\n\n%v\n\n%v", string(output), cmd.Stdout, cmd.Stderr)
-}
-
-
-func main() {
-
-	// Get current running exefile PIDs
-
-	cpuNum := runtime.NumCPU()
-	runtime.GOMAXPROCS(cpuNum)
-
-
-	exeFilePid := getGamePids()
-	logger.Println(exeFilePid)
-
-	currentModDirectory := getCurrentDirectory() + "/mods/"
+	
 	modReaderDir, _ := ioutil.ReadDir("./mods/")
 	var mods []string
 	for _, fileInfo := range modReaderDir {
@@ -120,22 +99,58 @@ func main() {
 			mods = append(mods, fileInfo.Name())
 		}
 	}
+	return mods
+}
 
+func callExecutable(pid string, code string) {
+	fmt.Println(pid)
+	args := []string{pid, code}
+	cmd := exec.Command("inject_python_32.exe", args...)
+	//output, err := cmd.CombinedOutput()
+	_, err := cmd.CombinedOutput()
+	//fmt.Println(cmd)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+	//logger.Println("Call exetuable result:\n%v\n\n%v\n\n%v", string(output), cmd.Stdout, cmd.Stderr)
+}
+
+
+func main() {
+
+	// MAXPROCS
+	cpuNum := runtime.NumCPU()
+	runtime.GOMAXPROCS(cpuNum)
+
+	// Get current game pids
+	exeFilePid := getGamePids()
+
+	pid := fmt.Sprintf("%d",exeFilePid[0])
+
+
+	// Get mod directory
+	currentModDirectory := getCurrentDirectory() + "/mods/"
+
+	// Get mod list
+	mods := getMods()
 	
+
+
 	logger.Println(fmt.Sprintf("[INFO] EVEModX %s start", VERSION))
 	logger.Println(fmt.Sprintf("[INFO] CPU number: %d", cpuNum))
-	logger.Println(fmt.Sprintf("[INFO] Current mod directory: %s", currentModDirectory))
+	logger.Println(fmt.Sprintf("[INFO] Current mod directory: [%s]", currentModDirectory))
 	logger.Println(fmt.Sprintf("[INFO] Existing mods: %s", mods))
-	pid := fmt.Sprintf("%d",exeFilePid[0])
+	
 	// THIS IS FUCKED -> pid := string(exeFilePid[0])
 	logger.Println(fmt.Sprintf("[INFO] Using pid %d", exeFilePid[0]))
 	
 
 	code := `import sys;sys.path.append('` + currentModDirectory + `');import ` + mods[0] + ``
 
-	logger.Println(fmt.Sprintf("[INFO] Using payload %s", code))
+	logger.Println(fmt.Sprintf("[INFO] Using payload [%s]", code))
 	
 	callExecutable(pid, code)
-		
+	
 }
 
