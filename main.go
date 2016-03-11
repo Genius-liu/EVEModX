@@ -103,7 +103,7 @@ func getMods() []string {
 }
 
 func callExecutable(pid string, code string) {
-	fmt.Println(pid)
+	//fmt.Println(pid)
 	args := []string{pid, code}
 	cmd := exec.Command("inject_python_32.exe", args...)
 	//output, err := cmd.CombinedOutput()
@@ -128,14 +128,18 @@ func main() {
 
 	pid := fmt.Sprintf("%d",exeFilePid[0])
 
-
 	// Get mod directory
 	currentModDirectory := getCurrentDirectory() + "/mods/"
 
 	// Get mod list
 	mods := getMods()
 	
-
+	// Build import string
+	importMods := ""
+	var mod string
+	for _, mod = range mods {
+		importMods = importMods + "import " + mod + ";"
+	}
 
 	logger.Println(fmt.Sprintf("[INFO] EVEModX %s start", VERSION))
 	logger.Println(fmt.Sprintf("[INFO] CPU number: %d", cpuNum))
@@ -144,9 +148,8 @@ func main() {
 	
 	// THIS IS FUCKED -> pid := string(exeFilePid[0])
 	logger.Println(fmt.Sprintf("[INFO] Using pid %d", exeFilePid[0]))
-	
 
-	code := `import sys;sys.path.append('` + currentModDirectory + `');import ` + mods[0] + ``
+	code := `import sys;sys.path.append('` + currentModDirectory + `');` + importMods + ``
 
 	logger.Println(fmt.Sprintf("[INFO] Using payload [%s]", code))
 	
