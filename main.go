@@ -18,6 +18,7 @@ import (
 	"os/exec"
 	"log"
 	"runtime"
+	"time"
 	"path/filepath"
 	"strings"
 	"io/ioutil"
@@ -29,7 +30,12 @@ const (
 )
 
 
-var logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds|log.Lshortfile)
+var (
+	logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds|log.Lshortfile)
+	pidIndex int
+	exeFilePid []int
+) 
+
 
 type ulong int32
 
@@ -119,14 +125,9 @@ func callExecutable(pid string, code string) {
 
 func main() {
 
-	// MAXPROCS
+	// Set MAXPROCS
 	cpuNum := runtime.NumCPU()
 	runtime.GOMAXPROCS(cpuNum)
-
-	// Get current game pids
-	exeFilePid := getGamePids()
-
-	pid := fmt.Sprintf("%d",exeFilePid[0])
 
 	// Get mod directory
 	currentModDirectory := getCurrentDirectory() + "/mods/"
@@ -134,20 +135,44 @@ func main() {
 	// Get mod list
 	mods := getMods()
 	
+	logger.Println(fmt.Sprintf("[INFO] EVEModX %s start", VERSION))
+	logger.Println(fmt.Sprintf("[INFO] CPU number: %d", cpuNum))
+	logger.Println(fmt.Sprintf("[INFO] Current mod directory: [%s]", currentModDirectory))
+	logger.Println(fmt.Sprintf("[INFO] Existing mods: %s", mods))
+	logger.Println(fmt.Sprintf("[INFO] Awaiting for game process..."))
+
+	LABEL1:	
+	// Get current game pids
+	exeFilePid = getGamePids()
+
+	if len(exeFilePid) > 0 {
+		var pid int
+		var i int
+		//logger.Printf(fmt.Sprintf("[INFO] Listing current game process"))
+		for i, pid = range exeFilePid {
+			logger.Printf(fmt.Sprintf("[INFO] EXEFILE %d: %d", i, pid))
+		}
+		logger.Printf(fmt.Sprintf("[PRMT] Please input pid index (0~%d ,default for 0): ", len(exeFilePid) - 1 ))
+		fmt.Scanln(&pidIndex)
+	} else {
+		time.Sleep(2 * time.Second)
+		goto LABEL1
+	}
+
+	pid := fmt.Sprintf("%d",exeFilePid[pidIndex])
+
+
 	// Build import string
 	importMods := ""
+
 	var mod string
 	for _, mod = range mods {
 		importMods = importMods + "import " + mod + ";"
 	}
 
-	logger.Println(fmt.Sprintf("[INFO] EVEModX %s start", VERSION))
-	logger.Println(fmt.Sprintf("[INFO] CPU number: %d", cpuNum))
-	logger.Println(fmt.Sprintf("[INFO] Current mod directory: [%s]", currentModDirectory))
-	logger.Println(fmt.Sprintf("[INFO] Existing mods: %s", mods))
 	
 	// THIS IS FUCKED -> pid := string(exeFilePid[0])
-	logger.Println(fmt.Sprintf("[INFO] Using pid %d", exeFilePid[0]))
+	logger.Println(fmt.Sprintf("[INFO] Using pid %d", exeFilePid[pidIndex]))
 
 	code := `import sys;sys.path.append('` + currentModDirectory + `');` + importMods + ``
 
@@ -156,4 +181,3 @@ func main() {
 	callExecutable(pid, code)
 	
 }
-
