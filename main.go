@@ -146,6 +146,11 @@ func main() {
 	exeFilePid = getGamePids()
 
 	if len(exeFilePid) > 0 {
+		if len(exeFilePid) == 1 {
+			logger.Printf(fmt.Sprintf("[INFO] Using pid: %d as game process", exeFilePid[0]))
+			pidIndex = 0
+			goto LABEL2
+		}
 		var pid int
 		var i int
 		//logger.Printf(fmt.Sprintf("[INFO] Listing current game process"))
@@ -159,6 +164,7 @@ func main() {
 		goto LABEL1
 	}
 
+	LABEL2:
 	pid := fmt.Sprintf("%d",exeFilePid[pidIndex])
 
 
@@ -181,3 +187,4 @@ func main() {
 	callExecutable(pid, code)
 	
 }
+
