@@ -12,7 +12,7 @@ import (
 	"fmt"
 	"syscall"
 	"unsafe"
-	//"strconv"
+	"strconv"
 	"bytes"
 	"os"
 	"os/exec"
@@ -31,9 +31,16 @@ const (
 
 
 var (
-	logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds|log.Lshortfile)
+	//logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds|log.Lshortfile)
+	logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 	pidIndex int
 	exeFilePid []int
+	modIndex string
+	modIndexString []string
+	modIndexInt []int
+	pid string
+	importMods string
+	code string
 ) 
 
 
@@ -122,6 +129,9 @@ func callExecutable(pid string, code string) {
 	//logger.Println("Call exetuable result:\n%v\n\n%v\n\n%v", string(output), cmd.Stdout, cmd.Stderr)
 }
 
+func printSprt() {
+	logger.Println(fmt.Sprintf("[SPRT] ---------------------------------------------"))
+}
 
 func main() {
 
@@ -135,11 +145,12 @@ func main() {
 	// Get mod list
 	mods := getMods()
 	
-	logger.Println(fmt.Sprintf("[INFO] EVEModX %s start", VERSION))
+	logger.Println(fmt.Sprintf("[INFO] EVEModX %s starting", VERSION))
 	logger.Println(fmt.Sprintf("[INFO] CPU number: %d", cpuNum))
 	logger.Println(fmt.Sprintf("[INFO] Current mod directory: [%s]", currentModDirectory))
 	logger.Println(fmt.Sprintf("[INFO] Existing mods: %s", mods))
 	logger.Println(fmt.Sprintf("[INFO] Awaiting for game process..."))
+	printSprt()
 
 	LABEL1:	
 	// Get current game pids
@@ -151,23 +162,61 @@ func main() {
 			pidIndex = 0
 			goto LABEL2
 		}
-		var pid int
-		var i int
+		var pid, i int
+		var modName, modIndexSingle string
+
 		//logger.Printf(fmt.Sprintf("[INFO] Listing current game process"))
 		for i, pid = range exeFilePid {
 			logger.Printf(fmt.Sprintf("[INFO] EXEFILE %d: %d", i, pid))
 		}
+		printSprt()
 		logger.Printf(fmt.Sprintf("[PRMT] Please input pid index (0~%d ,default for 0): ", len(exeFilePid) - 1 ))
+		logger.Printf(fmt.Sprintf("[NTCE] You should enter it after character choosing"))
+
 		fmt.Scanln(&pidIndex)
+
+		printSprt()
+		for i, modName = range mods {
+			logger.Printf(fmt.Sprintf("[INFO] MOD %d: %s", i + 1, modName))
+		}
+		printSprt()
+
+		logger.Printf(fmt.Sprintf("[PRMT] Please input mods index (eg: 1,3;0 for all):" ))
+		logger.Printf(fmt.Sprintf("[NTCE] You should enter it after character choosing"))
+
+		fmt.Scanln(&modIndex)
+		if modIndex == "0"{
+			
+			var mod string
+			for _, mod = range mods {
+				importMods = importMods + "import " + mod + ";"
+			}
+			goto LABEL3
+		}
+		modIndexString = strings.Split(modIndex, ",")
+
+		for i, modIndexSingle = range modIndexString {
+			b, error := strconv.Atoi(modIndexSingle)
+			b = b - 1
+			if error != nil{
+				logger.Printf(fmt.Sprintf("[ERRO] Cannot convert input to slice"))
+				os.Exit(1)
+			}
+			modIndexInt = append(modIndexInt, b )
+		}
+
+		//logger.Printf(fmt.Sprintf("%d", modIndexInt ))
+
 	} else {
 		time.Sleep(2 * time.Second)
 		goto LABEL1
 	}
 
 	LABEL2:
-	pid := fmt.Sprintf("%d",exeFilePid[pidIndex])
 
+	pid = fmt.Sprintf("%d",exeFilePid[pidIndex])
 
+/*	// [OLD]
 	// Build import string
 	importMods := ""
 
@@ -175,16 +224,25 @@ func main() {
 	for _, mod = range mods {
 		importMods = importMods + "import " + mod + ";"
 	}
+*/
 
-	
+	// Build import string
+	importMods = ""
+
+	for i := 0; i < len(modIndexInt); i++ {
+        importMods = importMods + "import " + mods[modIndexInt[i]] + ";"
+    }
+
+    LABEL3:
+	printSprt()
+
 	// THIS IS FUCKED -> pid := string(exeFilePid[0])
 	logger.Println(fmt.Sprintf("[INFO] Using pid %d", exeFilePid[pidIndex]))
 
-	code := `import sys;sys.path.append('` + currentModDirectory + `');` + importMods + ``
-
-	logger.Println(fmt.Sprintf("[INFO] Using payload [%s]", code))
+	code = `import sys;sys.path.append('` + currentModDirectory + `');` + importMods + ``
 	
+	logger.Println(fmt.Sprintf("[INFO] Using payload [%s]", code))
+	logger.Println(fmt.Sprintf("[INFO] Executing injection"))
 	callExecutable(pid, code)
 	
 }
-
