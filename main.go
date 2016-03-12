@@ -230,10 +230,10 @@ func main() {
 	importMods = ""
 
 	for i := 0; i < len(modIndexInt); i++ {
-        importMods = importMods + "import " + mods[modIndexInt[i]] + ";"
-    }
+		importMods = importMods + "import " + mods[modIndexInt[i]] + ";"
+	}
 
-    LABEL3:
+	LABEL3:
 	printSprt()
 
 	// THIS IS FUCKED -> pid := string(exeFilePid[0])
