@@ -6,6 +6,8 @@
 // ANY USE OF THIS CODE MAY BE PUNISHED BY
 // THE OFFICIAL. USE AT YOUR OWN RISK.
 
+// author masahoshiro@github
+
 package main
 
 import (
