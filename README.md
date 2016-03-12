@@ -6,7 +6,7 @@ EVEModX is a framework which helps you inject python code to EVE Online process(
 
 ## Todo
 
-All add-on mods should be placed in `./mods`. For more infomation see [Mods](https://github.com/EVEModX/Mods).
+All add-on mods should be placed in `./mods`. For more information see [Mods](https://github.com/EVEModX/Mods).
 
 ## Todo
 - Modularization
