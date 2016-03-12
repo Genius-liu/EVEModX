@@ -159,13 +159,14 @@ func main() {
 	exeFilePid = getGamePids()
 
 	if len(exeFilePid) > 0 {
+		var pid, i int
+		var modName, modIndexSingle string
 		if len(exeFilePid) == 1 {
 			logger.Printf(fmt.Sprintf("[INFO] Using pid: %d as game process", exeFilePid[0]))
 			pidIndex = 0
+
 			goto LABEL2
 		}
-		var pid, i int
-		var modName, modIndexSingle string
 
 		//logger.Printf(fmt.Sprintf("[INFO] Listing current game process"))
 		for i, pid = range exeFilePid {
@@ -177,6 +178,7 @@ func main() {
 
 		fmt.Scanln(&pidIndex)
 
+		LABEL2:
 		printSprt()
 		for i, modName = range mods {
 			logger.Printf(fmt.Sprintf("[INFO] MOD %d: %s", i + 1, modName))
@@ -193,6 +195,7 @@ func main() {
 			for _, mod = range mods {
 				importMods = importMods + "import " + mod + ";"
 			}
+
 			goto LABEL3
 		}
 		modIndexString = strings.Split(modIndex, ",")
@@ -214,9 +217,9 @@ func main() {
 		goto LABEL1
 	}
 
-	LABEL2:
+	// FUCKED -> LABEL2:
 
-	pid = fmt.Sprintf("%d",exeFilePid[pidIndex])
+	
 
 /*	// [OLD]
 	// Build import string
@@ -236,6 +239,9 @@ func main() {
 	}
 
 	LABEL3:
+
+	pid = fmt.Sprintf("%d",exeFilePid[pidIndex])
+
 	printSprt()
 
 	// THIS IS FUCKED -> pid := string(exeFilePid[0])
