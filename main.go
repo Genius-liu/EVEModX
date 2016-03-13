@@ -1,3 +1,5 @@
+//go:generate goversioninfo -icon=icon.ico
+
 // EVEModX Main
 // Works under Microsoft Windows platform
 // Still under HEAVY developing
@@ -28,7 +30,7 @@ import (
 )
 
 const (
-	VERSION = "0.0.2"
+	VERSION = "0.0.1a"
 )
 
 
