@@ -10,10 +10,10 @@ import (
 
 // Logger specifies a logger.
 var (
-	logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
+	Logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 )
 
 // Separator.
 func PrintSprt() {
-	logger.Println(fmt.Sprintf("[SPRT] ---------------------------------------------"))
+	Logger.Println(fmt.Sprintf("[SPRT] ---------------------------------------------"))
 }
