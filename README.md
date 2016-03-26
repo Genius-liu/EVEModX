@@ -1,6 +1,6 @@
 # EVEModX
 
-[![Build Status](https://travis-ci.org/EVEModX/EVEModX.svg?branch=master)](https://travis-ci.org/EVEModX/EVEModX)[![GoDoc](https://godoc.org/github.com/EVEModX/EVEModX/src?status.svg)](https://godoc.org/github.com/EVEModX/EVEModX/src)
+[![Build Status](https://travis-ci.org/EVEModX/EVEModX.svg?branch=master)](https://travis-ci.org/EVEModX/EVEModX)  [![GoDoc](https://godoc.org/github.com/EVEModX/EVEModX/src?status.svg)](https://godoc.org/github.com/EVEModX/EVEModX/src)
 
 EVEModX is a framework for modules(Mods) that can change the behavior of the EVE Online Client without touching any files.[中文说明](https://github.com/EVEModX/EVEModX/blob/master/README-zh.md)
 
