@@ -7,7 +7,11 @@ import (
 	"fmt"
 )
 
-func CallExecutable(pid string, code string) {
+// Function Inject(pid string, code string) injects 
+// python code into process specified by PID.
+// Haven't test whether it will work when there are
+// line breaks in the code.
+func Inject(pid string, code string) {
 	//fmt.Println(pid)
 	args := []string{pid, code}
 	cmd := exec.Command("inject_python_32.exe", args...)

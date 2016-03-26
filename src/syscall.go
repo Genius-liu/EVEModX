@@ -28,6 +28,7 @@ type PROCESSENTRY32 struct {
 	szExeFile [260]byte
 }
 
+// GetGamePids() returns a slice of all current exefile.exe's PID.
 func GetGamePids() []int {
 
 	kernel32 := syscall.NewLazyDLL("kernel32.dll");
@@ -59,4 +60,3 @@ func GetGamePids() []int {
 	_, _, _ = CloseHandle.Call(pHandle);
 	return results
 }
-

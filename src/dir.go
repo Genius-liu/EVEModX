@@ -10,6 +10,7 @@ import (
 	"os"
 )
 
+// GetCurrentDirectory() returns a string of current directory.
 func GetCurrentDirectory() string {
 	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
@@ -19,6 +20,7 @@ func GetCurrentDirectory() string {
 	//return dir
 }
 
+// GetMods() returns a slice of all Dirs(Mods) in ./mods .
 func GetMods() []string {
 	
 	modReaderDir, _ := ioutil.ReadDir("./mods/")
