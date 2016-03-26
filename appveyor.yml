@@ -13,7 +13,7 @@ install:
   - go get github.com/EVEModX/EVEModx/src
   - go version
   - go env
-  - go get -v -t ./...
+  - go get -v -t ./tests/evemodx_test.go
 
 build_script:
-  - go test -v ./tests/...
+  - go test -v ./tests/evemodx_test.go
