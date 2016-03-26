@@ -1,5 +1,3 @@
-// Misc
-// Copyright 2016 masahoshiro
 package evemodx
 
 import (
@@ -13,7 +11,7 @@ var (
 	Logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmicroseconds)
 )
 
-// Separator.
+// PrintSprt is a separator.
 func PrintSprt() {
 	Logger.Println(fmt.Sprintf("[SPRT] ---------------------------------------------"))
 }

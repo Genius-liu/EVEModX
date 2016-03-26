@@ -1,5 +1,3 @@
-// Syscall part of EVEModX
-// Copyright 2016 masahoshiro
 package evemodx
 
 import (
@@ -28,7 +26,8 @@ type PROCESSENTRY32 struct {
 	szExeFile [260]byte
 }
 
-// GetGamePids() returns a slice of all current exefile.exe's PID.
+// GetGamePids returns a slice of all current exefile.exe's
+// PID using WinAPI.
 func GetGamePids() []int {
 
 	kernel32 := syscall.NewLazyDLL("kernel32.dll");
