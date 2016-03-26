@@ -10,7 +10,7 @@ environment:
 install:
   - echo %PATH%
   - echo %GOPATH%
-  - go get github.com/EVEModX/EVEModx
+  - go get github.com/EVEModX/EVEModx/src
   - go version
   - go env
   - go get -v -t ./...
