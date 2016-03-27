@@ -1,0 +1,4 @@
+common:
+# common sets
+  injectall: true
+  # inject all mods when "true"
