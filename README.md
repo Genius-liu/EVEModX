@@ -14,5 +14,4 @@ All add-on mods should be placed in `./mods`. For more information see [Mods](ht
 
 ## Config
 
-Common: common sets
-  injectall: injectall mods when sets "true"
+See comments for config.yaml
