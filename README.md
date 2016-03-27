@@ -10,5 +10,4 @@ EVEModX is a framework for modules(Mods) that can change the behavior of the EVE
 All add-on mods should be placed in `./mods`. For more information see [Mods](https://github.com/EVEModX/Mods).
 
 ## Todo
-- Config
 - GUI
