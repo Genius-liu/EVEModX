@@ -14,6 +14,7 @@ func readFile(path string) string {
     return string(fd)  
 }
 
+// ReadConf returns the value of key given as saved in config.yaml .
 func ReadConf(key string) string {
 
 	cfg, _ := config.ParseYaml(readFile("config.yaml"))
