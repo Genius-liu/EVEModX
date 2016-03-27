@@ -1,5 +1,5 @@
 // Copyright 2016 The EVEModX Authors.
-// Use of this code may be punished by the official.
+// Use of this code may be punushed by the official.
 // USE AT YOUR OWN RISK!
 
 // Package evemodx(or emx) implements python injection
