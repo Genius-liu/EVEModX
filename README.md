@@ -12,8 +12,9 @@ All add-on mods should be placed in `./mods`. For more information see [Mods](ht
 ## Todo
 - GUI
 
----
+## Changelog
 
-## Config
+### 0.0.2
 
-See comments in config.yaml
+- Add changelog
+- Config support
