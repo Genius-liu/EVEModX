@@ -1,4 +1,4 @@
 common:
 # common sets
-  injectall: true
+  injectall: false
   # inject all mods when "true"
