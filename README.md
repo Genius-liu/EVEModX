@@ -8,6 +8,9 @@ EVEModX is a framework for modules(Mods) that can change the behavior of the EVE
 
 For latest release: see https://github.com/EVEModX/EVEModX/releases/latest
 
+## Requirements
+- [VC2015redist](https://www.microsoft.com/en-us/download/details.aspx?id=48145)
+
 ## Mods
 
 All add-on mods should be placed in `./mods`. For more information see [Mods](https://github.com/EVEModX/Mods).
