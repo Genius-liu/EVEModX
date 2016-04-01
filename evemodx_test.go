@@ -10,6 +10,8 @@
 
 // author masahoshiro@github
 
+// THIS CODE IS SHIT. I'M GOING TO REWRITE IT!
+
 package main
 
 import (
@@ -34,7 +36,7 @@ var (
 	modIndexString []string
 	modIndexInt []int
 	pid string
-	importMods string
+	payload string
 	code string
 ) 
 
@@ -58,14 +60,23 @@ func main() {
 	emx.Logger.Println(fmt.Sprintf("[INFO] Awaiting for game process..."))
 	emx.PrintSprt()
 
-	injectAll := emx.ReadConf("common.injectall")
+
+
+
+	injectAllMod := emx.ReadConf("common.injectallmod")
+	injectAllExe := emx.ReadConf("common.injectallexe")
 
 	LABEL1:	
 	// Get current game pids
 	exeFilePid = emx.GetGamePids()
 
+/*	for i, pid := range exeFilePid {
+		emx.Logger.Printf(fmt.Sprintf("[INFO] EXEFILE %d: %d", i + 1 , pid))
+	}
+	emx.PrintSprt()
+*/
 	if len(exeFilePid) > 0 {
-		var pid, i int
+		var i int
 		var modName, modIndexSingle string
 		if len(exeFilePid) == 1 {
 			emx.Logger.Printf(fmt.Sprintf("[INFO] Using pid: %d as game process", exeFilePid[0]))
@@ -74,15 +85,28 @@ func main() {
 			goto LABEL2
 		}
 
+		if injectAllExe == "true" {
+			emx.Logger.Printf(fmt.Sprintf("[INFO] Inject all game process" ))
+			goto LABEL2
+		}
+
 		//emx.Logger.Printf(fmt.Sprintf("[INFO] Listing current game process"))
-		for i, pid = range exeFilePid {
-			emx.Logger.Printf(fmt.Sprintf("[INFO] EXEFILE %d: %d", i, pid))
+		for i, pid := range exeFilePid {
+			emx.Logger.Printf(fmt.Sprintf("[INFO] EXEFILE %d: %d", i + 1 , pid))
 		}
 		emx.PrintSprt()
-		emx.Logger.Printf(fmt.Sprintf("[PRMT] Please input pid index (0~%d ,default for 0): ", len(exeFilePid) - 1 ))
+		emx.Logger.Printf(fmt.Sprintf("[PRMT] Please input pid index (0~%d ,0 for all): ", len(exeFilePid) - 1 ))
 		emx.Logger.Printf(fmt.Sprintf("[INFO] You should enter it after character choosing"))
 
 		fmt.Scanln(&pidIndex)
+
+		if pidIndex == 0 {
+			emx.Logger.Printf(fmt.Sprintf("[INFO] Inject all game process" ))
+			injectAllExe = "true"
+			goto LABEL2
+		}
+
+		pidIndex--
 
 		LABEL2:
 		emx.PrintSprt()
@@ -91,7 +115,7 @@ func main() {
 		}
 		emx.PrintSprt()
 
-		if injectAll == "true" {
+		if injectAllMod == "true" {
 			modIndex = "0"
 			emx.Logger.Printf(fmt.Sprintf("[INFO] Use all mods as config set"))
 			goto LABEL4
@@ -108,7 +132,7 @@ func main() {
 
 			var mod string
 			for _, mod = range mods {
-				importMods = importMods + "import " + mod + ";"
+				payload = payload + "import " + mod + ";"
 			}
 
 			goto LABEL3
@@ -132,42 +156,34 @@ func main() {
 		goto LABEL1
 	}
 
-	// FUCKED -> LABEL2:
-
+	// Build payload
 	
-
-/*	// [OLD]
-	// Build import string
-	importMods := ""
-
-	var mod string
-	for _, mod = range mods {
-		importMods = importMods + "import " + mod + ";"
-	}
-*/
-
-	// Build import string
-	importMods = ""
+	payload = ""
 
 	for i := 0; i < len(modIndexInt); i++ {
-		importMods = importMods + "import " + mods[modIndexInt[i]] + ";"
+		payload = payload + "import " + mods[modIndexInt[i]] + ";"
 	}
 
 	LABEL3:
-
-	pid = fmt.Sprintf("%d",exeFilePid[pidIndex])
-
 	emx.PrintSprt()
-
-	// THIS IS FUCKED -> pid := string(exeFilePid[0])
-	emx.Logger.Println(fmt.Sprintf("[INFO] Using pid %d", exeFilePid[pidIndex]))
-
-	code = `import sys;sys.path.append('` + currentModDirectory + `');` + importMods + ``
-	
+	code = `import sys;sys.path.append('` + currentModDirectory + `');` + payload + ``
 	emx.Logger.Println(fmt.Sprintf("[INFO] Using payload [%s]", code))
-	emx.Logger.Println(fmt.Sprintf("[INFO] Executing injection"))
 
+	if injectAllExe == "true" {
+
+		emx.Logger.Println(fmt.Sprintf("[INFO] Inject all pids"))
+
+		for i, _ := range exeFilePid {
+			pid = fmt.Sprintf("%d",exeFilePid[i])
+			emx.Logger.Println(fmt.Sprintf("[INFO] Executing injection for %d", exeFilePid[i]))
+			emx.Inject(pid, code)
+
+		}
+		os.Exit(1)
+	}	
+
+	emx.Logger.Println(fmt.Sprintf("[INFO] Executing injection for %d", exeFilePid[pidIndex]))
+	pid = fmt.Sprintf("%d",exeFilePid[pidIndex])
 	emx.Inject(pid, code)
-
 }
 
