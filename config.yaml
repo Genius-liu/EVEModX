@@ -3,4 +3,4 @@ common:
   injectallmod: false
   # inject all mods when "true"
   injectallexe: false
-  # inject all game process when "true"
+  # inject all game processes when "true"
