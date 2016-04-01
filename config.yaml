@@ -1,6 +1,6 @@
 common:
 # common sets
-  injectallmod: false
+  injectallmod: true
   # inject all mods when "true"
-  injectallexe: false
+  injectallexe: true
   # inject all game processes when "true"
